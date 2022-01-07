@@ -48,13 +48,13 @@ Once I've created 2 lighthouses, I created a client config that I could use for 
 
 After downloading the nebula binary for each client and copying the generated key and certificate file as well as my premade client config, I was ready to start nebula on each peer. It worked right out of the box with no issues. I made sure everything was set up correctly by cross-pinging every peer from every other peer, which also worked flawlessly.
 
-But theres one major downside to nebula, key management is still a pretty manual process which I was trying to avoid. I know there are solutions out there that try metigate this problem but I wanted to try headscale next before revisiting nebula and setting up something for key management.
+But there's one major downside to nebula, key management is still a pretty manual process which I was trying to avoid. I know there are solutions out there that try metigate this problem but I wanted to try headscale next before revisiting nebula and setting up something for key management.
 
 ### Headscale 
 
-Headscale is the open-source implementation of the tailscale control server and uses the tailscale client, so it seemed as the perfect solution to me. Running it is fairly easy. Theres also a docker image provided as well as a community maintained documentation for running headscale in docker. 
+Headscale is the open-source implementation of the tailscale control server and uses the tailscale client, so it seemed as the perfect solution to me. Running it is fairly easy and there's a docker image provided as well as a community maintained documentation for running headscale in docker. 
 
-I chose to go the bare metal route and installed headscale with systemd. Once the headscale server was up and running, I created a namespace then generated a preauth key to join my first peer to the network.
+I chose to go the bare metal route and installed headscale with systemd. Once the headscale server was up and running, I created a namespace and then generated a preauth key to join my first peer to the network.
 
 Joining my first peer was only a matter of running the command
 
@@ -111,6 +111,9 @@ There is no good way to come to a conclusion without defining clear requirements
 </tr>
 </table>
 
+## Final Thoughts
+
+For me and my individual usecases the winner is **innernet**
 
 [^wg]: WireGuard is a registered trademark of Jason A. Donenfeld
 [^tonari_blog]: So the tonari team, "Innernet Introduction", 2021, https://blog.tonari.no/introducing-innernet (accessed Jan 07, 2022).
