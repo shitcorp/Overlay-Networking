@@ -84,6 +84,7 @@ Now to the downsides: As of now, innernet has no windows support, which should o
 
 
 
+
 [^wg]: WireGuard is a registered trademark of Jason A. Donenfeld
 [^tonari_blog]: So the tonari team, "Innernet Introduction", 2021, https://blog.tonari.no/introducing-innernet (accessed Jan 07, 2022).
 [^DN]: So the Defined Networking team, 2021, "About Us", https://www.defined.net/about/ (accessed Jan 07, 2022).
