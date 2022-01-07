@@ -42,7 +42,7 @@ It is based on the [noise protocol](https://noiseprotocol.org/), not on WireGuar
 
 Nebula relies on so called "lighthouses" that peers use to get information about other peers. You can set up multiple lighthouses for redundancy and they generally do not have to know about each other. The peers however have to know about the lighthouses, their nebula IP's and their routable IP's. 
 
-<img align="right" alt="logo" src="./attachments/nebula_planning.jpg" height="300" width="220">
+<img align="right" alt="diagram of the network planned with nebula" src="./attachments/nebula_planning.png" height="220" style="margin:1px">
 
 Once I've created 2 lighthouses, I created a client config that I could use for multiple clients/peers. After that I had to generate a key for each peer and give it an IP address. The generated key and certificate file then had to be transferred to the individual peers that I wanted to join to the network. I generated 3 keys in total, one for my personal laptop, one for my work laptop and one for a server. I took notes while doing so and decided to put client (laptops, phones, workstations) IP's only in the range of 192.168.100.24 - 192.168.100.255 and reserve everything below 24 for servers or other network critical devices.
 
@@ -62,11 +62,13 @@ Joining my first peer was only a matter of running the command
 tailscale up --login-server http://headscale.example.com --authkey 76zghbKhn79uihOi7zhbjN8
 ```
 
-<img align="center" alt="logo" src="./attachments/headscale_success.png">
+<img align="center" alt="screenshot of the tailscale up command where you can see a successfull login" src="./attachments/headscale_success.png">
 
 I confirmed that everything worked by running `tailscale status` and all my peers showed up, so I tested pinging them by using `tailscale ping <hostname>`. This ping worked and returned a pong from the chosen peer. Now I've tried pinging the same peer using the regular `ping` command and the tailscale IP I got from `tailscale status`. This ping returned nothing, and there was no ssh communication possible from my laptop to the peer I just pinged with `tailscale ping`.
 
 ### Netmaker 
+
+*~ not tested yet ~*
 
 ### Innernet 
 
@@ -76,7 +78,7 @@ Innernet relies on a simple server/client model and the server serves as a contr
 
 After downloading the innernet-server package, I created the root network and one network called "humans" for the peers. I then generated an invite by running `innernet-server add-peer shitcorp`. The innernet CLI automcatically suggested the correct network to me as well as the next free IP address. The generated invite file was then securely transferred to the target node, where I joined the peer to the network by running `innernet install invite-file.toml`. Once succeded, only thing left to do was to enable the innernet interface by running `systemctl enable --now innernet@shitcorp`.
 
-<img align="right" alt="logo" src="./attachments/innernet.png" height="120">
+<img align="right" alt="screenshot of the command output of the innernet list command" src="./attachments/innernet.png" height="140" style="margin:1px">
 
 I tested everything by again pinging each peer from each other peer, using their innernet IP addresses. Everything worked flawlessly and I was happy with what I saw. I then listed all connected peers using `innernet list --tree`.
 
@@ -90,12 +92,13 @@ There is no good way to come to a conclusion without defining clear requirements
 <tr>
 <td>    
 
-|           | 1    | 2    | 3    | 4    | 5    | 6    |
-| :-------- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Tailscale | ✔️    | ✔️    | ✔️    | ❔    | ✔️    | ❔    |
-| Nebula    | ✔️    | ❌    | ✔️    | ❌    | ❌    | ✔️    |
-| Headscale | ✔️    | ✔️    | ✔️    | ❌    | ❌    | ❌    |
-| Innernet  | ✔️    | ✔️    | ✔️    | ✔️    | ❌    | ✔️    |
+|           | 1    | 2    | 3    | 4    | 5    | 6    | 7    |
+| :-------- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Tailscale | ✔️    | ✔️    | ✔️    | ❔    | ✔️    | ❔    | ❔    |
+| Nebula    | ✔️    | ❌    | ✔️    | ❌    | ❌    | ✔️    | ✔️    |
+| Headscale | ✔️    | ✔️    | ✔️    | ❌    | ❌    | ❌    | ❔    |
+| Innernet  | ✔️    | ✔️    | ✔️    | ✔️    | ❌    | ✔️    | ❔    |
+| Netmaker  | N/A  | N/A  | N/A  | N/A  | N/A  | N/A  | N/A  | N/A |
     
 </td>
 <td>
@@ -106,6 +109,7 @@ There is no good way to come to a conclusion without defining clear requirements
 4. Ability to create separated network CIDR's and subnets
 5. Can be used by a "normal user" without technical background / Suitable to be used by your family
 6. Would be an option for an enterprise VPN network
+7. High Availability / Redundancy
  
 </td>
 </tr>
@@ -113,7 +117,40 @@ There is no good way to come to a conclusion without defining clear requirements
 
 ## Final Thoughts
 
-For me and my individual usecases the winner is **innernet**
+I plan on using this kind of WireGuard[^wg]-Mesh-Overlay-Network for 2 types of workloads: management networks and secure communication between the nodes of a kubernetes cluster (here's a nice [guide](https://github.com/hobby-kube/guide#wireguard-setup)). 
+
+With these usecases in mind for me way to go is **innernet**. It allows me to create a root network in which I can define different networks for the individual workloads. An example setup would look like this:
+
+```
+shitcorp 
+  10.42.0.0/16 shitcorp
+    10.42.0.1/32 innernet-server
+    | ◉ 10.42.0.1: innernet-server (+A9bmK…)
+    10.42.1.0/32 compute_servers
+    | ◉ 10.42.1.1: compute_server_1 (Dhuz8h…)
+    | ◉ 10.42.1.2: compute_server_2 (Asizdh…) 
+    10.42.2.0/32 storage_servers
+    | ◉ 10.42.2.1: storage_server_1 (Lj9fez…)
+    | ◉ 10.42.2.2: storage_server_2 (dsdqF2…) 
+    10.42.64.0/24 humans
+    | ◉ 10.42.64.1: laptop (you, YOCurr…)
+    10.42.65.0/24 iot_devices
+    | ◉ 10.42.65.1: sensor_d420 (dlwxqv…)
+    | ◉ 10.42.65.2: sensor_d430 (8dEskf…)
+    | ◉ 10.42.65.3: sensor_d440 (kSxg2v…)
+```
+
+I would then have to add a so called "association" between a few of these networks, so the servers can talk to each other, humans can reach servers and IoT devices. associations are added with with the command `innernet add-association shitcorp` after which the innernet CLI presents you with a collection of your CIDRs you can associate with each other by selecting them.
+
+```bash
+❯ sudo innernet list-associations shitcorp
+[*] Fetching CIDRs
+[*] Fetching associations
+1: compute_servers <=> humans
+2: storage_servers <=> humans
+3: iot_devices <=> humans
+4: compute_servers <=> storage_servers
+```
 
 [^wg]: WireGuard is a registered trademark of Jason A. Donenfeld
 [^tonari_blog]: So the tonari team, "Innernet Introduction", 2021, https://blog.tonari.no/introducing-innernet (accessed Jan 07, 2022).
