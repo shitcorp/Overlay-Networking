@@ -6,7 +6,7 @@ A small writeup about overlay networking and the experiences I've made in the pa
 
 I wanted an overlay network spanning across multiple servers in different datacenters from different hosting providers. My requirements were that there is **no hub-and-spoke** like architecture and instead every peer should have a **point-to-point** connection to every other peer in the network. The solution should also be **lightweight** on the peers. Oh and **encryption** would be sweet lol. 
 
-Naturally a Wireguard[^wg] mesh network came to mind as it checks all the requirements.
+Naturally a Wireguard[^wg] mesh network came to mind as it meets all the requirements.
 
 ## The Options
 
@@ -62,7 +62,7 @@ tailscale up --login-server http://headscale.example.com --authkey 76zghbKhn79ui
 
 <img align="center" alt="logo" src="./attachments/headscale_success.png">
 
-I confirmed that everything is working by running `tailscale status` and all my peers showed up, so I tested pinging them by using `tailscale ping <hostname>`. This ping worked and returned a pong from the chosen peer. Now I've tried pinging the same peer using the regular `ping` command and the tailscale IP I got from `tailscale status`. This ping returned nothing, and there was no ssh communication possible from my laptop to the peer I just pinged with `tailscale ping`.
+I confirmed that everything worked by running `tailscale status` and all my peers showed up, so I tested pinging them by using `tailscale ping <hostname>`. This ping worked and returned a pong from the chosen peer. Now I've tried pinging the same peer using the regular `ping` command and the tailscale IP I got from `tailscale status`. This ping returned nothing, and there was no ssh communication possible from my laptop to the peer I just pinged with `tailscale ping`.
 
 ### Netmaker 
 
@@ -82,7 +82,32 @@ Now to the downsides: As of now, innernet has no windows support, which should o
 
 ## The Solution
 
+There is no good way to come to a conclusion without defining clear requirements or usecases that my solution should meet.
 
+<table border="0">
+<tr>
+<td>
+
+1. Lightweight
+2. Easy key management
+3. Encrypts traffics between peers
+4. Ability to create separated network CIDR's and subnets
+5. Can be used by a "normal user" without technical background / Suitable to be used by your family
+6. Would be an option for an enterprise VPN network
+ 
+</td>
+<td>    
+
+|           | 1    | 2    | 3    | 4    | 5    | 6    |
+| :-------- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Tailscale | ✔️    | ✔️    | ✔️    | ❔    | ✔️    | ❔    |
+| Nebula    | ✔️    | ❌    | ✔️    | ❌    | ❌    | ✔️    |
+| Headscale | ✔️    | ✔️    | ✔️    | ❌    | ❌    | ❌    |
+| Innernet  | ✔️    | ✔️    | ✔️    | ✔️    | ❌    | ✔️    |
+    
+</td>
+</tr>
+</table>
 
 
 [^wg]: WireGuard is a registered trademark of Jason A. Donenfeld
