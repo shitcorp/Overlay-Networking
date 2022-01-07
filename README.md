@@ -19,10 +19,12 @@ Naturally a Wireguard[^wg] mesh network came to mind as it meets all the require
 > If there is some sort of company behind the product, you can go to the official website by clicking the name
 
 ## The Journey
+<!--
 
 - Tailscale, mega ding, feier ich übertrieben, aber ... -> nebula, war gut, nur keys immer manuell machen zu müssen ist kopffick und ios app hat nicht funcktioniert oder ich war zu dumm, overall aber eig gut (wenn key management funktionieren würde) -> headscale, war gut, "headscale ping" functioniert, aber regulärer ping nich -> netmaker gefunden, nicht isntalliert weil war kopffick -> Innernet von husky geschickt bekommen und installiert, looks good to me, aber bisschen "unreif" weil kein windows support, dokumenation außerdem recht spärlich
 
 --------
+-->
 
 ### Tailscale
 
@@ -86,16 +88,6 @@ There is no good way to come to a conclusion without defining clear requirements
 
 <table border="0">
 <tr>
-<td>
-
-1. Lightweight
-2. Easy key management
-3. Encrypts traffics between peers
-4. Ability to create separated network CIDR's and subnets
-5. Can be used by a "normal user" without technical background / Suitable to be used by your family
-6. Would be an option for an enterprise VPN network
- 
-</td>
 <td>    
 
 |           | 1    | 2    | 3    | 4    | 5    | 6    |
@@ -105,6 +97,16 @@ There is no good way to come to a conclusion without defining clear requirements
 | Headscale | ✔️    | ✔️    | ✔️    | ❌    | ❌    | ❌    |
 | Innernet  | ✔️    | ✔️    | ✔️    | ✔️    | ❌    | ✔️    |
     
+</td>
+<td>
+
+1. Lightweight
+2. Easy key management
+3. Encrypts traffics between peers
+4. Ability to create separated network CIDR's and subnets
+5. Can be used by a "normal user" without technical background / Suitable to be used by your family
+6. Would be an option for an enterprise VPN network
+ 
 </td>
 </tr>
 </table>
