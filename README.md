@@ -42,9 +42,9 @@ It is based on the [noise protocol](https://noiseprotocol.org/), not on WireGuar
 
 Nebula relies on so called "lighthouses" that peers use to get information about other peers. You can set up multiple lighthouses for redundancy and they generally do not have to know about each other. The peers however have to know about the lighthouses, their nebula IP's and their routable IP's. 
 
-<img align="right" alt="diagram of the network planned with nebula" src="./attachments/nebula_planning.png" height="220" style="margin:1px">
+<img align="right" alt="diagram of the network planned with nebula" src="./attachments/nebula_planning.png" height="240" style="margin:1px">
 
-Once I've created 2 lighthouses, I created a client config that I could use for multiple clients/peers. After that I had to generate a key for each peer and give it an IP address. The generated key and certificate file then had to be transferred to the individual peers that I wanted to join to the network. I generated 3 keys in total, one for my personal laptop, one for my work laptop and one for a server. I took notes while doing so and decided to put client (laptops, phones, workstations) IP's only in the range of 192.168.100.24 - 192.168.100.255 and reserve everything below 24 for servers or other network critical devices.
+Once I've created 2 lighthouses, I created a client config that I could use for multiple clients/peers. After that I had to generate a key for each peer and give it an IP address. The generated key and certificate file then had to be transferred to the individual peers that I wanted to join to the network. I generated 3 keys in total, one for my personal laptop, one for my work laptop and one for a server. While doing so I took notes, sketched out my network and decided to put client (laptops, phones, workstations) IP's only in the range above 192.168.100.24 and reserve everything below 24 for servers or other network critical devices.
 
 After downloading the nebula binary for each client and copying the generated key and certificate file as well as my premade client config, I was ready to start nebula on each peer. It worked right out of the box with no issues. I made sure everything was set up correctly by cross-pinging every peer from every other peer, which also worked flawlessly.
 
@@ -68,7 +68,7 @@ I confirmed that everything worked by running `tailscale status` and all my peer
 
 ### Netmaker 
 
-*~ not tested yet ~*
+*~not tested yet~*
 
 ### Innernet 
 
